@@ -82,8 +82,10 @@ public class FeeChargeSystemUnitTesting {
 		 * 		back 2 months before today. 2*2*5$ = $20.0 */
 		Double totFees = a.calculateAndApplyOverdueFees(JohnSmith);
 		
+		Double expResult = 20.0;
+		Double Result = JohnSmith.getFeesOwned();
 		//Comparison
-		Assert.assertTrue((JohnSmith.getFeesOwned()).equals(20.0));
+		Assert.assertEquals(expResult, Result);
 		
 		
 	}

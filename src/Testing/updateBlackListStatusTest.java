@@ -45,8 +45,8 @@ class updateBlackListStatusTest {
 		JohnSmith.updateBlackListStatus();
 		AbbyDoe.updateBlackListStatus();
 		
-		Assert.assertTrue((JohnSmith.getIsBlackListed()).equals(true));
-		Assert.assertTrue((AbbyDoe.getIsBlackListed()).equals(true));
+		Assert.assertEquals(true,JohnSmith.getIsBlackListed());
+		Assert.assertEquals(true,AbbyDoe.getIsBlackListed());
 		
 		a.clearFees(JohnSmith);
 		a.clearFees(AbbyDoe);
@@ -54,7 +54,7 @@ class updateBlackListStatusTest {
 		JohnSmith.updateBlackListStatus();
 		AbbyDoe.updateBlackListStatus();
 		
-		Assert.assertTrue((JohnSmith.getIsBlackListed()).equals(false));
-		Assert.assertTrue((AbbyDoe.getIsBlackListed()).equals(false));
+		Assert.assertEquals(false,JohnSmith.getIsBlackListed());
+		Assert.assertEquals(false,AbbyDoe.getIsBlackListed());
 	}
 }

@@ -870,461 +870,407 @@ public class logInAs {
 		
 				list.setModel(dlm);
 				
-			}
-		});
-	     
-	    
+			}	
+ 	   
+ 	   });
+ 	   
+	   
+ 	   librarianInitialize();
+ 	   
+ 	   customerInitialize();
+    
+	}
 	
-	
-	/////////////////////////////////////////////PUT ALL FUNCTIONS RELATED TO LIBRARIAN BELOW////////////////////////////////////////////
-		
+	private void librarianInitialize() {
 		librarianBrowseButton.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					cl1.show(middle,"browse");
-					dlm.clear();
-					
-					
-				}
-			});
-		
-		librarianReturnButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				cl1.show(middle, "return");
-				customerDLM.clear();
-			}
-		});
-		
-		pickupBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				cl1.show(middle, "pickup");
-				customerHoldsDLM.clear();
-				custIDField2.setText("");
-				
-			}
-		});
-		
-		searchCustomerBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				searchHoldsDLM.clear();
-				searchBorrowDLM.clear();
-				
-				custIDField3.setText("");
-				custName.setText("");
-				custBlacklist.setText("");
-				custID.setText("");
-				custPhone.setText("");
-				custAddress1.setText("");
-				custAddress2.setText("");
-				custAddress3.setText("");
-				custType.setText("");
-				custBirth.setText("");
-				custFees.setText("");
-				
-				cl1.show(middle, "search");
-				
-			}
-		});
-		
-		/**
-		 * Borrow button 
-		 */
-		borrow_button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-										
-				if (list.getSelectedIndex() != -1) {
-						
-				
-					dialogMediaBorrow.getContentPane().setLayout(new GridLayout(6,1,5,5));
-					dialogMediaBorrow.setModalityType(ModalityType.TOOLKIT_MODAL);
-				
-					dialogMediaBorrow.setBounds(0,0 ,screenSize.width/5, screenSize.height/4);
-					dialogMediaBorrow.setLocationRelativeTo(null);
-				
-					
-					holdOrTakeComboBox.setBackground(Color.white);
-					holdOrTakeComboBox.setModel(new DefaultComboBoxModel(new String[] {"hold" , "take"}));
-					
-				
-					dialogMediaBorrow.getContentPane().add(customerID);
-					dialogMediaBorrow.getContentPane().add(idTextField );
-					dialogMediaBorrow.getContentPane().add(holdOrTakeLabel );
-					dialogMediaBorrow.getContentPane().add(holdOrTakeComboBox );
-					dialogMediaBorrow.getContentPane().add(okButton);
-					dialogMediaBorrow.getContentPane().add(cancelButton);
-					
-					dialogMediaBorrow.setVisible(true);
-				
-				
-				}else {
-					JOptionPane.showMessageDialog(null, "Please select media from the list", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-				}
-				
-			}		
-				
-		});
-		
-		
-		/** 
-		 * Ok button for book return tab
-		 */
-		okButton1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if ( !custIDField.getText().isEmpty() ) {
-					
-					Customer c = dtb.searchByID(custIDField.getText());
-					
-					if(c==null){
-						customerDLM.clear();
-						JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
-					} else {
-						
-						if (c.getMediaOwned().size() == 0) {
-							JOptionPane.showMessageDialog(null, "Customer doesn't own any media", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
-						}else {
-							
-							customerDLM.clear();
-							for (Map.Entry<PhysicalMedia, Calendar> entry : c.getMediaOwned().entrySet())
-							{
-								customerDLM.addElement(entry.getKey());
-								
-							}
-						}
-						
-					}
-					
-				}else {
-					JOptionPane.showMessageDialog(null, "Please fill in Customer ID", "ErrorBox", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		
-		/**
-		 * Return button in return tab
-		 */
-		returnBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				if (customerBorrowedList.getSelectedIndex() != -1) {
-					PhysicalMedia item = new PhysicalMedia();
-					try{item = (CD)customerBorrowedList.getSelectedValue();}catch(Exception e) {
-						try {item = (DVD)customerBorrowedList.getSelectedValue();}catch(Exception f) {
-							try {item = (PaperMedia)customerBorrowedList.getSelectedValue();}catch(Exception g) {}}}
-				
-					JOptionPane.showMessageDialog(dialogMediaBorrow, "Media was removed from customer's : " + item.getCustomer().getID() + " account." , "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-						
-					librarian.returnMedia(item, item.getCustomer());
-					
-					for (int i=0;i<dtb.getCustomers().size();i++) {
-						System.out.println(dtb.getCustomers().get(i).toString());
-					}
-					
-					
-					dtb.save();
-					
-					customerDLM.clear();
-					
-				}else {
-					JOptionPane.showMessageDialog(null, "Please select media from the list", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		
-		
-		/**
-		 * Cancel button within  borrow dialog
-		 */
-		
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dialogMediaBorrow.setVisible(false);
-				dialogMediaBorrow.dispose();
-			}
-		});
-		
-		/**
-		 * Cancel button within show orders dialog
-		 */
-		cancelButton_requestMedia.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dialogRequestMedia.setVisible(false);
-				dialogRequestMedia.dispose();
-			}
-		});
-		
-		cancelButton_showOrders.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dialogShowOrders.setVisible(false);
-				dialogShowOrders.dispose();
-			}
-		});
-		
-		
-		
-		/**
-		 * Ok button within a borrow dialog
-		 */
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				//Search customer by ID
-				
-				Customer c = dtb.searchByID(idTextField.getText());
-				
-				if (c == null) {
-					JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
-				} else {
-					
-					PhysicalMedia item = new PhysicalMedia();
-					try{item = (CD)list.getSelectedValue();}catch(Exception e) {
-						try {item = (DVD)list.getSelectedValue();}catch(Exception f) {
-							try {item = (PaperMedia)list.getSelectedValue();}catch(Exception g) {}}}
-					
-					String msg = librarian.addMediaOwned(c,item,String.valueOf(holdOrTakeComboBox.getSelectedItem()));
-							
-					JOptionPane.showMessageDialog(dialogMediaBorrow, msg, "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-					
-					System.out.println(dtb.shelfString());
-					
-					for (int i=0;i<dtb.getCustomers().size();i++) {
-						System.out.println(dtb.getCustomers().get(i).toString());
-					}
-
-					dtb.save();
-					
-					dialogMediaBorrow.setVisible(false);
-					dialogMediaBorrow.dispose();
-					dlm.clear();
 			
-				}
-			}
-		});
-
-		/**
-		 * Ok button in a pickup tab
-		 */
-		okButtonPickup.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if ( !custIDField2.getText().isEmpty() ) {
-					
-					Customer c = dtb.searchByID(custIDField2.getText());
-					
-					if(c==null){
-						customerHoldsDLM.clear();
-						JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
-					} else {
-						
-						if (c.getMediaOnHold().size() == 0) {
-							JOptionPane.showMessageDialog(null, "Customer doesn't have any media on hold", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
-							customerHoldsDLM.clear();
-						}else {
-							
-							customerHoldsDLM.clear();
-							for (Map.Entry<PhysicalMedia, CalendarPeriod> entry : c.getMediaOnHold().entrySet())
-							{
-								customerHoldsDLM.addElement(entry);
-								
-							}
-						}
-						
-					}
-					
-				}else {
-					JOptionPane.showMessageDialog(null, "Please fill in Customer ID", "ErrorBox", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		
-		/**
-		 * Pickup button in pickup tab
-		 */
-		pickupButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				if (customerHoldsList.getSelectedIndex() != -1) {
-					Map.Entry<PhysicalMedia,CalendarPeriod> item = 
-							new AbstractMap.SimpleEntry<PhysicalMedia, CalendarPeriod>(new PhysicalMedia(), new CalendarPeriod(Calendar.getInstance(),Calendar.getInstance()));
-					try{item = (Map.Entry<PhysicalMedia, CalendarPeriod>) customerHoldsList.getSelectedValue();}catch(Exception e) {
-						try {item = (Map.Entry<PhysicalMedia, CalendarPeriod>) customerHoldsList.getSelectedValue();}catch(Exception f) {
-							try {item =(Map.Entry<PhysicalMedia, CalendarPeriod>) customerHoldsList.getSelectedValue();}catch(Exception g) {}}}
-					
-					String msg = librarian.removeFromHoldsToPickup(item.getKey(),item.getKey().getCustomer());
-					
-					
-					JOptionPane.showMessageDialog(dialogMediaBorrow, msg, "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-					customerHoldsDLM.clear();
-					
-				} else {
-					JOptionPane.showMessageDialog(null, "Select item from a list", "InfoBox ", JOptionPane.WARNING_MESSAGE);
-				}
-
-				dtb.save();
-		
-			}
-		});
-		
-		/**
-		 * Change status button in browse tab
-		 */
-		changeStatusButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (list.getSelectedIndex() != -1) {
-
-					dialogChangeStatus.getContentPane().setLayout(new GridLayout(3,1,5,5));
-					dialogChangeStatus.setModalityType(ModalityType.TOOLKIT_MODAL);
-				
-					dialogChangeStatus.setBounds(0,0 ,screenSize.width/5, screenSize.height/5);
-					dialogChangeStatus.setLocationRelativeTo(null);
-					
-					statusComboBox.setBackground(Color.white);
-					statusComboBox.setModel(new DefaultComboBoxModel(new String[] {"available" , "reserved","unavailable"}));
-					
-					dialogChangeStatus.getContentPane().add(statusComboBox);
-					dialogChangeStatus.getContentPane().add(changeStatusOKButton);
-					dialogChangeStatus.getContentPane().add(changeStatusCancelButton);
-					
-					dialogChangeStatus.setVisible(true);
-					
-					dialogChangeStatus.setAlwaysOnTop(true);
-								
-				} else {
-					JOptionPane.showMessageDialog(null, "Select an item from a list", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-			
-		});
-				
-		/**
-		 * Ok button within change status dialog
-		 */
-		changeStatusOKButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				PhysicalMedia item = (PhysicalMedia) list.getSelectedValue();
-				
-				String action = String.valueOf(statusComboBox.getSelectedItem());
-				
-				if (action.equals("available")){
-					item.getStatus().setPrimaryStatus("available"); 
-					if (!item.getStatus().getCurrentStatus().equals("in use")) {
-						item.getStatus().setCurrentStatus("available");}
-					}
-				
-				else if (action.equals("reserved")){
-					item.getStatus().setReserved();
-					if (!item.getStatus().getCurrentStatus().equals("in use")) {
-						item.getStatus().setCurrentStatus("reserved");
-					}
-				}
-				
-				else {
-					item.getStatus().setPrimaryStatus("unavailable");
-					if (!item.getStatus().getCurrentStatus().equals("in use")) {
-						item.getStatus().setCurrentStatus("unavailable");}
-				}
-				
-				dialogChangeStatus.setVisible(false);
-				dialogChangeStatus.dispose();
-				dtb.save();
-				
-				System.out.println("Primary status : " + item.getStatus().getPrimaryStatus());
-				System.out.println("Current status : " + item.getStatus().getCurrentStatus());
-				
-				JOptionPane.showMessageDialog(dialogMediaBorrow, "Status was set to : " + item.getStatus().getPrimaryStatus(), "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-				
+				cl1.show(middle,"browse");
 				dlm.clear();
 				
 				
-			}});
-				
-		/**
-		 * Cancel button within change status dialog
-		 */
-		changeStatusCancelButton.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent arg0) {
-				
-				dialogChangeStatus.setVisible(false);
-				dialogChangeStatus.dispose();
 			}
 		});
-		
-		/**
-		 * Ok button in search tab
-		 */
-		btnOk.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
+	
+	librarianReturnButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			cl1.show(middle, "return");
+			customerDLM.clear();
+		}
+	});
+	
+	pickupBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			cl1.show(middle, "pickup");
+			customerHoldsDLM.clear();
+			custIDField2.setText("");
+			
+		}
+	});
+	
+	searchCustomerBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			searchHoldsDLM.clear();
+			searchBorrowDLM.clear();
+			
+			custIDField3.setText("");
+			custName.setText("");
+			custBlacklist.setText("");
+			custID.setText("");
+			custPhone.setText("");
+			custAddress1.setText("");
+			custAddress2.setText("");
+			custAddress3.setText("");
+			custType.setText("");
+			custBirth.setText("");
+			custFees.setText("");
+			
+			cl1.show(middle, "search");
+			
+		}
+	});
+	
+	/**
+	 * Borrow button 
+	 */
+	borrow_button.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+									
+			if (list.getSelectedIndex() != -1) {
+					
+			
+				dialogMediaBorrow.getContentPane().setLayout(new GridLayout(6,1,5,5));
+				dialogMediaBorrow.setModalityType(ModalityType.TOOLKIT_MODAL);
+			
+				dialogMediaBorrow.setBounds(0,0 ,screenSize.width/5, screenSize.height/4);
+				dialogMediaBorrow.setLocationRelativeTo(null);
+			
 				
-				if ( !custIDField3.getText().isEmpty() ) {
+				holdOrTakeComboBox.setBackground(Color.white);
+				holdOrTakeComboBox.setModel(new DefaultComboBoxModel(new String[] {"hold" , "take"}));
+				
+			
+				dialogMediaBorrow.getContentPane().add(customerID);
+				dialogMediaBorrow.getContentPane().add(idTextField );
+				dialogMediaBorrow.getContentPane().add(holdOrTakeLabel );
+				dialogMediaBorrow.getContentPane().add(holdOrTakeComboBox );
+				dialogMediaBorrow.getContentPane().add(okButton);
+				dialogMediaBorrow.getContentPane().add(cancelButton);
+				
+				dialogMediaBorrow.setVisible(true);
+			
+			
+			}else {
+				JOptionPane.showMessageDialog(null, "Please select media from the list", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}		
+			
+	});
+	
+	
+	/** 
+	 * Ok button for book return tab
+	 */
+	okButton1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			
+			if ( !custIDField.getText().isEmpty() ) {
+				
+				Customer c = dtb.searchByID(custIDField.getText());
+				
+				if(c==null){
+					customerDLM.clear();
+					JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
+				} else {
 					
-					Customer c = dtb.searchByID(custIDField3.getText());
-					
-					/*
-					 * customer does not exist
-					 */
-					if(c==null){
-						searchHoldsDLM.clear();
-						searchBorrowDLM.clear();
+					if (c.getMediaOwned().size() == 0) {
+						JOptionPane.showMessageDialog(null, "Customer doesn't own any media", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
+					}else {
 						
-						custName.setText("");
-						custBlacklist.setText("");
-						custID.setText("");
-						custPhone.setText("");
-						custAddress1.setText("");
-						custAddress2.setText("");
-						custAddress3.setText("");
-						custType.setText("");
-						custBirth.setText("");
-						custFees.setText("");
-						JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
-					} 
-					/*
-					 * customer does exist
-					 */
-					else {
-						Address adr = c.getAddress();
-						Calendar birth = c.getBirthDate();
-						
-						
-						custName.setText(c.getFirstName() + " " + c.getLastName());
-						if(c.getIsBlackListed()) {
-							custBlacklist.setText("BLACKLISTED!");
-						}
-						else {
-							custBlacklist.setText("Not blacklisted.");
-						}
-						
-						custID.setText(c.getID());
-						custPhone.setText(c.getPhoneNumber());
-						
-						custAddress1.setText(adr.getHouseNum() + " " + adr.getStreetName());
-						custAddress2.setText(adr.getCity() + ", " + adr.getCountry());
-						custAddress3.setText(adr.getZip());
-						
-						custType.setText(c.getMaxMedia() + "");
-						custBirth.setText(birth.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH ) + " " + birth.get(Calendar.DATE) + ", " + birth.get(Calendar.YEAR) );
-						custFees.setText("$ " + c.getFeesOwned());
-						
-						searchHoldsDLM.clear();
-						searchBorrowDLM.clear();
-						for(Map.Entry<PhysicalMedia, Calendar> entry : c.getMediaOwned().entrySet())
+						customerDLM.clear();
+						for (Map.Entry<PhysicalMedia, Calendar> entry : c.getMediaOwned().entrySet())
 						{
-							searchBorrowDLM.addElement(entry.getKey());
-						}
-						
-						for(Map.Entry<PhysicalMedia, CalendarPeriod> entry : c.getMediaOnHold().entrySet())
-						{
-							searchHoldsDLM.addElement(entry.getKey());
-						}
+							customerDLM.addElement(entry.getKey());
 							
 						}
+					}
+					
 				}
 				
-				else {
+			}else {
+				JOptionPane.showMessageDialog(null, "Please fill in Customer ID", "ErrorBox", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	});
+	
+	/**
+	 * Return button in return tab
+	 */
+	returnBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			
+			if (customerBorrowedList.getSelectedIndex() != -1) {
+				PhysicalMedia item = new PhysicalMedia();
+				try{item = (CD)customerBorrowedList.getSelectedValue();}catch(Exception e) {
+					try {item = (DVD)customerBorrowedList.getSelectedValue();}catch(Exception f) {
+						try {item = (PaperMedia)customerBorrowedList.getSelectedValue();}catch(Exception g) {}}}
+			
+				JOptionPane.showMessageDialog(dialogMediaBorrow, "Media was removed from customer's : " + item.getCustomer().getID() + " account." , "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+					
+				librarian.returnMedia(item, item.getCustomer());
+				
+				for (int i=0;i<dtb.getCustomers().size();i++) {
+					System.out.println(dtb.getCustomers().get(i).toString());
+				}
+				
+				
+				dtb.save();
+				
+				customerDLM.clear();
+				
+			}else {
+				JOptionPane.showMessageDialog(null, "Please select media from the list", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	});
+	
+	
+	/**
+	 * Cancel button within  borrow dialog
+	 */
+	
+	cancelButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			dialogMediaBorrow.setVisible(false);
+			dialogMediaBorrow.dispose();
+		}
+	});
+	
+	/**
+	 * Cancel button within show orders dialog
+	 */
+	cancelButton_requestMedia.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			dialogRequestMedia.setVisible(false);
+			dialogRequestMedia.dispose();
+		}
+	});
+	
+	cancelButton_showOrders.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			dialogShowOrders.setVisible(false);
+			dialogShowOrders.dispose();
+		}
+	});
+	
+	
+	
+	/**
+	 * Ok button within a borrow dialog
+	 */
+	okButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			
+			//Search customer by ID
+			
+			Customer c = dtb.searchByID(idTextField.getText());
+			
+			if (c == null) {
+				JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
+			} else {
+				
+				PhysicalMedia item = new PhysicalMedia();
+				try{item = (CD)list.getSelectedValue();}catch(Exception e) {
+					try {item = (DVD)list.getSelectedValue();}catch(Exception f) {
+						try {item = (PaperMedia)list.getSelectedValue();}catch(Exception g) {}}}
+				
+				String msg = librarian.addMediaOwned(c,item,String.valueOf(holdOrTakeComboBox.getSelectedItem()));
+						
+				JOptionPane.showMessageDialog(dialogMediaBorrow, msg, "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+				
+				System.out.println(dtb.shelfString());
+				
+				for (int i=0;i<dtb.getCustomers().size();i++) {
+					System.out.println(dtb.getCustomers().get(i).toString());
+				}
+
+				dtb.save();
+				
+				dialogMediaBorrow.setVisible(false);
+				dialogMediaBorrow.dispose();
+				dlm.clear();
+		
+			}
+		}
+	});
+
+	/**
+	 * Ok button in a pickup tab
+	 */
+	okButtonPickup.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			
+			if ( !custIDField2.getText().isEmpty() ) {
+				
+				Customer c = dtb.searchByID(custIDField2.getText());
+				
+				if(c==null){
+					customerHoldsDLM.clear();
+					JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
+				} else {
+					
+					if (c.getMediaOnHold().size() == 0) {
+						JOptionPane.showMessageDialog(null, "Customer doesn't have any media on hold", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
+						customerHoldsDLM.clear();
+					}else {
+						
+						customerHoldsDLM.clear();
+						for (Map.Entry<PhysicalMedia, CalendarPeriod> entry : c.getMediaOnHold().entrySet())
+						{
+							customerHoldsDLM.addElement(entry);
+							
+						}
+					}
+					
+				}
+				
+			}else {
+				JOptionPane.showMessageDialog(null, "Please fill in Customer ID", "ErrorBox", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	});
+	
+	/**
+	 * Pickup button in pickup tab
+	 */
+	pickupButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			
+			if (customerHoldsList.getSelectedIndex() != -1) {
+				Map.Entry<PhysicalMedia,CalendarPeriod> item = 
+						new AbstractMap.SimpleEntry<PhysicalMedia, CalendarPeriod>(new PhysicalMedia(), new CalendarPeriod(Calendar.getInstance(),Calendar.getInstance()));
+				try{item = (Map.Entry<PhysicalMedia, CalendarPeriod>) customerHoldsList.getSelectedValue();}catch(Exception e) {
+					try {item = (Map.Entry<PhysicalMedia, CalendarPeriod>) customerHoldsList.getSelectedValue();}catch(Exception f) {
+						try {item =(Map.Entry<PhysicalMedia, CalendarPeriod>) customerHoldsList.getSelectedValue();}catch(Exception g) {}}}
+				
+				String msg = librarian.removeFromHoldsToPickup(item.getKey(),item.getKey().getCustomer());
+				
+				
+				JOptionPane.showMessageDialog(dialogMediaBorrow, msg, "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+				customerHoldsDLM.clear();
+				
+			} else {
+				JOptionPane.showMessageDialog(null, "Select item from a list", "InfoBox ", JOptionPane.WARNING_MESSAGE);
+			}
+
+			dtb.save();
+	
+		}
+	});
+	
+	/**
+	 * Change status button in browse tab
+	 */
+	changeStatusButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			if (list.getSelectedIndex() != -1) {
+
+				dialogChangeStatus.getContentPane().setLayout(new GridLayout(3,1,5,5));
+				dialogChangeStatus.setModalityType(ModalityType.TOOLKIT_MODAL);
+			
+				dialogChangeStatus.setBounds(0,0 ,screenSize.width/5, screenSize.height/5);
+				dialogChangeStatus.setLocationRelativeTo(null);
+				
+				statusComboBox.setBackground(Color.white);
+				statusComboBox.setModel(new DefaultComboBoxModel(new String[] {"available" , "reserved","unavailable"}));
+				
+				dialogChangeStatus.getContentPane().add(statusComboBox);
+				dialogChangeStatus.getContentPane().add(changeStatusOKButton);
+				dialogChangeStatus.getContentPane().add(changeStatusCancelButton);
+				
+				dialogChangeStatus.setVisible(true);
+				
+				dialogChangeStatus.setAlwaysOnTop(true);
+							
+			} else {
+				JOptionPane.showMessageDialog(null, "Select an item from a list", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+		
+	});
+			
+	/**
+	 * Ok button within change status dialog
+	 */
+	changeStatusOKButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			
+			PhysicalMedia item = (PhysicalMedia) list.getSelectedValue();
+			
+			String action = String.valueOf(statusComboBox.getSelectedItem());
+			
+			if (action.equals("available")){
+				item.getStatus().setPrimaryStatus("available"); 
+				if (!item.getStatus().getCurrentStatus().equals("in use")) {
+					item.getStatus().setCurrentStatus("available");}
+				}
+			
+			else if (action.equals("reserved")){
+				item.getStatus().setReserved();
+				if (!item.getStatus().getCurrentStatus().equals("in use")) {
+					item.getStatus().setCurrentStatus("reserved");
+				}
+			}
+			
+			else {
+				item.getStatus().setPrimaryStatus("unavailable");
+				if (!item.getStatus().getCurrentStatus().equals("in use")) {
+					item.getStatus().setCurrentStatus("unavailable");}
+			}
+			
+			dialogChangeStatus.setVisible(false);
+			dialogChangeStatus.dispose();
+			dtb.save();
+			
+			System.out.println("Primary status : " + item.getStatus().getPrimaryStatus());
+			System.out.println("Current status : " + item.getStatus().getCurrentStatus());
+			
+			JOptionPane.showMessageDialog(dialogMediaBorrow, "Status was set to : " + item.getStatus().getPrimaryStatus(), "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+			
+			dlm.clear();
+			
+			
+		}});
+			
+	/**
+	 * Cancel button within change status dialog
+	 */
+	changeStatusCancelButton.addActionListener(new ActionListener() {
+		
+		public void actionPerformed(ActionEvent arg0) {
+			
+			dialogChangeStatus.setVisible(false);
+			dialogChangeStatus.dispose();
+		}
+	});
+	
+	/**
+	 * Ok button in search tab
+	 */
+	btnOk.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+
+			
+			if ( !custIDField3.getText().isEmpty() ) {
+				
+				Customer c = dtb.searchByID(custIDField3.getText());
+				
+				/*
+				 * customer does not exist
+				 */
+				if(c==null){
 					searchHoldsDLM.clear();
 					searchBorrowDLM.clear();
 					
@@ -1338,198 +1284,285 @@ public class logInAs {
 					custType.setText("");
 					custBirth.setText("");
 					custFees.setText("");
-					JOptionPane.showMessageDialog(null, "Please fill in Customer ID", "ErrorBox", JOptionPane.INFORMATION_MESSAGE);
-				}
-				
+					JOptionPane.showMessageDialog(dialogMediaBorrow, "No customer with such ID exists", "InfoBox ", JOptionPane.WARNING_MESSAGE);
+				} 
+				/*
+				 * customer does exist
+				 */
+				else {
+					Address adr = c.getAddress();
+					Calendar birth = c.getBirthDate();
+					
+					
+					custName.setText(c.getFirstName() + " " + c.getLastName());
+					if(c.getIsBlackListed()) {
+						custBlacklist.setText("BLACKLISTED!");
+					}
+					else {
+						custBlacklist.setText("Not blacklisted.");
+					}
+					
+					custID.setText(c.getID());
+					custPhone.setText(c.getPhoneNumber());
+					
+					custAddress1.setText(adr.getHouseNum() + " " + adr.getStreetName());
+					custAddress2.setText(adr.getCity() + ", " + adr.getCountry());
+					custAddress3.setText(adr.getZip());
+					
+					custType.setText(c.getMaxMedia() + "");
+					custBirth.setText(birth.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH ) + " " + birth.get(Calendar.DATE) + ", " + birth.get(Calendar.YEAR) );
+					custFees.setText("$ " + c.getFeesOwned());
+					
+					searchHoldsDLM.clear();
+					searchBorrowDLM.clear();
+					for(Map.Entry<PhysicalMedia, Calendar> entry : c.getMediaOwned().entrySet())
+					{
+						searchBorrowDLM.addElement(entry.getKey());
+					}
+					
+					for(Map.Entry<PhysicalMedia, CalendarPeriod> entry : c.getMediaOnHold().entrySet())
+					{
+						searchHoldsDLM.addElement(entry.getKey());
+					}
+						
+					}
 			}
-		});
+			
+			else {
+				searchHoldsDLM.clear();
+				searchBorrowDLM.clear();
 				
-		/**
-		 * pay fees button in search tab
-		 * 
-		 */
-		btnPayFees.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!custFees.getText().isEmpty() /*&& Double.parseDouble(custFees.getText().substring(1)) > 0*/) {
+				custName.setText("");
+				custBlacklist.setText("");
+				custID.setText("");
+				custPhone.setText("");
+				custAddress1.setText("");
+				custAddress2.setText("");
+				custAddress3.setText("");
+				custType.setText("");
+				custBirth.setText("");
+				custFees.setText("");
+				JOptionPane.showMessageDialog(null, "Please fill in Customer ID", "ErrorBox", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		}
+	});
+			
+	/**
+	 * pay fees button in search tab
+	 * 
+	 */
+	btnPayFees.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			if(!custFees.getText().isEmpty() /*&& Double.parseDouble(custFees.getText().substring(1)) > 0*/) {
 
-					dialogFeePayment.setBounds(0, 0, screenSize.width/4, screenSize.height/4);
-					dialogFeePayment.getContentPane().setLayout(new GridLayout(0,1,0,0));
-					dialogFeePayment.setModalityType(ModalityType.TOOLKIT_MODAL);
-					dialogFeePayment.setLocationRelativeTo(null);
-
-
-					//panel 30
-
-					panel_30.setLayout(new GridLayout(0,3,0,0));
-
-					panel_30.add(lblName2);
-					lblName2.setFont(new Font("Tahoma", Font.BOLD, 12));
-
-					panel_30.add(nameLabel2);
-					nameLabel2.setText(custName.getText());
-					nameLabel2.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-					panel_30.add(lblNewLabel2);
-
-					panel_30.add(lblId);
-					lblId.setFont(new Font("Tahoma", Font.BOLD, 12));
-
-					panel_30.add(idLabel);
-					idLabel.setText(custID.getText());
-					idLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-					//panel 31
-
-					panel_31.setLayout(new GridLayout(0, 3, 0, 0));
-
-					panel_31.add(lblFees);
-					lblFees.setFont(new Font("Tahoma", Font.BOLD, 12));
-
-					panel_31.add(feesLabel);
-					feesLabel.setText(custFees.getText());
-					feesLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-					//panel 32
-
-					panel_32.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-					panel_32.add(payAmount);
-					payAmount.setColumns(10);
-
-					panel_32.add(payBtn);
-					payBtn.setFont(new Font("Tahoma", Font.BOLD, 12));
-
-					//panel 33
-
-					panel_33.setLayout(new GridLayout(1, 0, 0, 0));
-
-					panel_33.add(updateInfo);
-					updateInfo.setFont(new Font("Tahoma", Font.BOLD, 12));
-
-					//panel 34
-					panel_34.setLayout(new BorderLayout(0, 0));
-
-					panel_34.add(quitBtn, BorderLayout.CENTER);
-					quitBtn.setFont(new Font("Tahoma", Font.BOLD, 12));
+				dialogFeePayment.setBounds(0, 0, screenSize.width/4, screenSize.height/4);
+				dialogFeePayment.getContentPane().setLayout(new GridLayout(0,1,0,0));
+				dialogFeePayment.setModalityType(ModalityType.TOOLKIT_MODAL);
+				dialogFeePayment.setLocationRelativeTo(null);
 
 
-					dialogFeePayment.getContentPane().add(panel_30);
-					dialogFeePayment.getContentPane().add(panel_31);
-					dialogFeePayment.getContentPane().add(panel_32);
-					dialogFeePayment.getContentPane().add(panel_33);
-					dialogFeePayment.getContentPane().add(panel_34);
+				//panel 30
 
-					dialogFeePayment.setVisible(true);
+				panel_30.setLayout(new GridLayout(0,3,0,0));
+
+				panel_30.add(lblName2);
+				lblName2.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+				panel_30.add(nameLabel2);
+				nameLabel2.setText(custName.getText());
+				nameLabel2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+				panel_30.add(lblNewLabel2);
+
+				panel_30.add(lblId);
+				lblId.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+				panel_30.add(idLabel);
+				idLabel.setText(custID.getText());
+				idLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+				//panel 31
+
+				panel_31.setLayout(new GridLayout(0, 3, 0, 0));
+
+				panel_31.add(lblFees);
+				lblFees.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+				panel_31.add(feesLabel);
+				feesLabel.setText(custFees.getText());
+				feesLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+				//panel 32
+
+				panel_32.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+				panel_32.add(payAmount);
+				payAmount.setColumns(10);
+
+				panel_32.add(payBtn);
+				payBtn.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+				//panel 33
+
+				panel_33.setLayout(new GridLayout(1, 0, 0, 0));
+
+				panel_33.add(updateInfo);
+				updateInfo.setFont(new Font("Tahoma", Font.BOLD, 12));
+
+				//panel 34
+				panel_34.setLayout(new BorderLayout(0, 0));
+
+				panel_34.add(quitBtn, BorderLayout.CENTER);
+				quitBtn.setFont(new Font("Tahoma", Font.BOLD, 12));
 
 
+				dialogFeePayment.getContentPane().add(panel_30);
+				dialogFeePayment.getContentPane().add(panel_31);
+				dialogFeePayment.getContentPane().add(panel_32);
+				dialogFeePayment.getContentPane().add(panel_33);
+				dialogFeePayment.getContentPane().add(panel_34);
+
+				dialogFeePayment.setVisible(true);
+
+
+
+
+			}else {
+				JOptionPane.showMessageDialog(null, "No fees to be payed.", "No Fees Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+		}
+	});
+
+	/**
+	 * pay amount button in fee payment dialog
+	 */
+	payBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			Double paying, change, curFee, newFee;
+			Customer c = dtb.searchByID(idLabel.getText());
+
+			try {
+				paying = Double.parseDouble(payAmount.getText());
+				curFee = Double.parseDouble(custFees.getText().substring(1));
+
+				/*if(paying < 0) {
+					JOptionPane.showMessageDialog(dialogFeePayment, "Please enter a positive number.", "Number Format Error", JOptionPane.ERROR_MESSAGE);
+				}else */if(curFee - paying < 0) {
+					change = paying-curFee;
+
+					c.setFeesOwned(0.0);
+					dtb.save();
+
+					custFees.setText("$ 0.0");
+					JOptionPane.showMessageDialog(dialogFeePayment, "Fees paid in full.\nChange Due: $" + change.toString(), "Change Due", JOptionPane.INFORMATION_MESSAGE);
+
+					dialogFeePayment.setVisible(false);
+					payAmount.setText("");
+					dialogFeePayment.dispose();
 
 
 				}else {
-					JOptionPane.showMessageDialog(null, "No fees to be payed.", "No Fees Error", JOptionPane.ERROR_MESSAGE);
+					newFee = Math.round((curFee-paying)*100.0)/100.0;
+					c.setFeesOwned(newFee);
+					dtb.save();
+
+					custFees.setText("$ " + newFee.toString());
+
+					JOptionPane.showMessageDialog(dialogFeePayment, "Remaining Fees: " + newFee.toString(), "Remaining Fees", JOptionPane.INFORMATION_MESSAGE);
+
+					dialogFeePayment.setVisible(false);
+					payAmount.setText("");
+					dialogFeePayment.dispose();
 				}
 
 			}
-		});
-
-		/**
-		 * pay amount button in fee payment dialog
-		 */
-		payBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Double paying, change, curFee, newFee;
-				Customer c = dtb.searchByID(idLabel.getText());
-
-				try {
-					paying = Double.parseDouble(payAmount.getText());
-					curFee = Double.parseDouble(custFees.getText().substring(1));
-
-					/*if(paying < 0) {
-						JOptionPane.showMessageDialog(dialogFeePayment, "Please enter a positive number.", "Number Format Error", JOptionPane.ERROR_MESSAGE);
-					}else */if(curFee - paying < 0) {
-						change = paying-curFee;
-
-						c.setFeesOwned(0.0);
-						dtb.save();
-
-						custFees.setText("$ 0.0");
-						JOptionPane.showMessageDialog(dialogFeePayment, "Fees paid in full.\nChange Due: $" + change.toString(), "Change Due", JOptionPane.INFORMATION_MESSAGE);
-
-						dialogFeePayment.setVisible(false);
-						payAmount.setText("");
-						dialogFeePayment.dispose();
-
-
-					}else {
-						newFee = Math.round((curFee-paying)*100.0)/100.0;
-						c.setFeesOwned(newFee);
-						dtb.save();
-
-						custFees.setText("$ " + newFee.toString());
-
-						JOptionPane.showMessageDialog(dialogFeePayment, "Remaining Fees: " + newFee.toString(), "Remaining Fees", JOptionPane.INFORMATION_MESSAGE);
-
-						dialogFeePayment.setVisible(false);
-						payAmount.setText("");
-						dialogFeePayment.dispose();
-					}
-
-				}
-				catch (NumberFormatException g){
-					JOptionPane.showMessageDialog(dialogFeePayment, "Please enter a valid number.", "Number Format Error", JOptionPane.ERROR_MESSAGE);
-				}
-				catch (NullPointerException f) {
-					JOptionPane.showMessageDialog(dialogFeePayment, "Please enter a number.", "Number Format Error", JOptionPane.ERROR_MESSAGE);
-				}
-
+			catch (NumberFormatException g){
+				JOptionPane.showMessageDialog(dialogFeePayment, "Please enter a valid number.", "Number Format Error", JOptionPane.ERROR_MESSAGE);
 			}
-		});
-
-		/**
-		 * Cancel button in fee payment dialog
-		 */
-		quitBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dialogFeePayment.setVisible(false);
-				payAmount.setText("");
-				dialogFeePayment.dispose();
+			catch (NullPointerException f) {
+				JOptionPane.showMessageDialog(dialogFeePayment, "Please enter a number.", "Number Format Error", JOptionPane.ERROR_MESSAGE);
 			}
-		});
 
-				
-		/**
-		 * Librarian's order media button
-		 */
-		btnOrderMedia.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Librarian temp = dtb.searchLibrarianByID(IDPersonLoggedIn);
-				if (!temp.getAdmin()) {	
-					cl1.show(middle, "order");
-					customerDLM.clear();
-					customerOrderRequestsModel.clear();
-					
-					//populate list with current Media Requests from Customers
-					int numRequests = dtb.getNumberOfOrderRequests();
-					for (int i = 0; i < dtb.getOrderRequests().size(); i++) {
-						customerOrderRequestsModel.addElement(dtb.getOrderRequests().get(i));
-					}
-				}
-				else {
-					JOptionPane.showMessageDialog(null, "ERROR! You do not have permission to access that, please contact a system administrator",
-							"ERROR!", JOptionPane.INFORMATION_MESSAGE);
-					
-				}
-			}
+		}
+	});
+
+	/**
+	 * Cancel button in fee payment dialog
+	 */
+	quitBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			dialogFeePayment.setVisible(false);
+			payAmount.setText("");
+			dialogFeePayment.dispose();
+		}
+	});
+
 			
-		});
-		
-		/**
-		 * Librarian button to create new order from existing requests
-		 * 
-		 */
-		btnCreateNewOrder.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+	/**
+	 * Librarian's order media button
+	 */
+	btnOrderMedia.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			Librarian temp = dtb.searchLibrarianByID(IDPersonLoggedIn);
+			if (!temp.getAdmin()) {	
+				cl1.show(middle, "order");
+				customerDLM.clear();
+				customerOrderRequestsModel.clear();
 				
-				// If a request is selected, auto-fill author and name fields
+				//populate list with current Media Requests from Customers
+				int numRequests = dtb.getNumberOfOrderRequests();
+				for (int i = 0; i < dtb.getOrderRequests().size(); i++) {
+					customerOrderRequestsModel.addElement(dtb.getOrderRequests().get(i));
+				}
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "ERROR! You do not have permission to access that, please contact a system administrator",
+						"ERROR!", JOptionPane.INFORMATION_MESSAGE);
+				
+			}
+		}
+		
+	});
+	
+	/**
+	 * Librarian button to create new order from existing requests
+	 * 
+	 */
+	btnCreateNewOrder.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			
+			// If a request is selected, auto-fill author and name fields
+			mediaNameTextField.setText("");
+			mediaAuthorTextField.setText("");
+			mediaDateTextField_y.setText("");
+			mediaDateTextField_m.setText("");
+			mediaDateTextField_d.setText("");
+			
+			mediaTypeComboBox.setBackground(Color.white);
+			mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"CDs" , "DVDs", "Books/Magazines/Comics"}));
+			mediaTypeComboBox.setBackground(Color.white);
+			
+			if (listMediaOrders.getSelectedIndex() != -1) {
+				OrderRequest request = (OrderRequest)listMediaOrders.getSelectedValue();
+			
+				mediaAuthorTextField.setText(request.getCreator());
+				mediaNameTextField.setText(request.getName());
+
+				if(request.getMediaType().equals("CDs")){
+					mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"CDs" , "DVDs", "Books/Magazines/Comics"}));
+				}
+				
+				if(request.getMediaType().equals("DVDs")){
+					mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"DVDs" , "CDs", "Books/Magazines/Comics"}));
+				}
+				
+				if(request.getMediaType().equals("Books/Magazines/Comics")){
+					mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Books/Magazines/Comics" , "DVDs", "CDs"}));
+				}
+					
+			} else { //No index selected - raw order created
 				mediaNameTextField.setText("");
 				mediaAuthorTextField.setText("");
 				mediaDateTextField_y.setText("");
@@ -1538,231 +1571,197 @@ public class logInAs {
 				
 				mediaTypeComboBox.setBackground(Color.white);
 				mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"CDs" , "DVDs", "Books/Magazines/Comics"}));
-				mediaTypeComboBox.setBackground(Color.white);
-				
-				if (listMediaOrders.getSelectedIndex() != -1) {
-					OrderRequest request = (OrderRequest)listMediaOrders.getSelectedValue();
-				
-					mediaAuthorTextField.setText(request.getCreator());
-					mediaNameTextField.setText(request.getName());
-	
-					if(request.getMediaType().equals("CDs")){
-						mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"CDs" , "DVDs", "Books/Magazines/Comics"}));
-					}
-					
-					if(request.getMediaType().equals("DVDs")){
-						mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"DVDs" , "CDs", "Books/Magazines/Comics"}));
-					}
-					
-					if(request.getMediaType().equals("Books/Magazines/Comics")){
-						mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Books/Magazines/Comics" , "DVDs", "CDs"}));
-					}
-						
-				} else { //No index selected - raw order created
-					mediaNameTextField.setText("");
-					mediaAuthorTextField.setText("");
-					mediaDateTextField_y.setText("");
-					mediaDateTextField_m.setText("");
-					mediaDateTextField_d.setText("");
-					
-					mediaTypeComboBox.setBackground(Color.white);
-					mediaTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"CDs" , "DVDs", "Books/Magazines/Comics"}));
-				}
-				
-				// Dialog creation and display
-				dialogRequestMedia.getContentPane().setLayout(new GridLayout(0,2,5,5));
-				dialogRequestMedia.setModalityType(ModalityType.TOOLKIT_MODAL);
-				
-				dialogRequestMedia.setBounds(0,0 ,screenSize.width/3, screenSize.height/2);
-				dialogRequestMedia.setLocationRelativeTo(null);
-						
-				dialogRequestMedia.getContentPane().add(mediaTypeLabel);
-				dialogRequestMedia.getContentPane().add(mediaTypeComboBox);
-				dialogRequestMedia.getContentPane().add(mediaNameLabel);
-				dialogRequestMedia.getContentPane().add(mediaNameTextField);
-				dialogRequestMedia.getContentPane().add(mediaAuthorLabel);
-				dialogRequestMedia.getContentPane().add(mediaAuthorTextField);
-				dialogRequestMedia.getContentPane().add(mediaDateLabel_y);
-				dialogRequestMedia.getContentPane().add(mediaDateTextField_y);
-				dialogRequestMedia.getContentPane().add(mediaDateLabel_m);
-				dialogRequestMedia.getContentPane().add(mediaDateTextField_m);
-				dialogRequestMedia.getContentPane().add(mediaDateLabel_d);
-				dialogRequestMedia.getContentPane().add(mediaDateTextField_d);
-				
-									
-				dialogRequestMedia.getContentPane().add(orderMediaOkBtn);
-				dialogRequestMedia.getContentPane().add(cancelButton_requestMedia);
-					
-				dialogRequestMedia.setVisible(true);
-				
 			}
-		});
-	
 			
-		/**
-		 * Ok Button for the ordering media pop-up window
-		 * 
-		 */
-		orderMediaOkBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// error checking
-				if (mediaNameTextField.getText().equals("") || mediaAuthorTextField.getText().equals("") || mediaDateTextField_d.getText().equals("")
-						|| mediaDateTextField_m.getText().equals("") || mediaDateTextField_y.getText().equals("")) {
-					JOptionPane.showMessageDialog(dialogRequestMedia, "Please Complete All Fields", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
+			// Dialog creation and display
+			dialogRequestMedia.getContentPane().setLayout(new GridLayout(0,2,5,5));
+			dialogRequestMedia.setModalityType(ModalityType.TOOLKIT_MODAL);
+			
+			dialogRequestMedia.setBounds(0,0 ,screenSize.width/3, screenSize.height/2);
+			dialogRequestMedia.setLocationRelativeTo(null);
+					
+			dialogRequestMedia.getContentPane().add(mediaTypeLabel);
+			dialogRequestMedia.getContentPane().add(mediaTypeComboBox);
+			dialogRequestMedia.getContentPane().add(mediaNameLabel);
+			dialogRequestMedia.getContentPane().add(mediaNameTextField);
+			dialogRequestMedia.getContentPane().add(mediaAuthorLabel);
+			dialogRequestMedia.getContentPane().add(mediaAuthorTextField);
+			dialogRequestMedia.getContentPane().add(mediaDateLabel_y);
+			dialogRequestMedia.getContentPane().add(mediaDateTextField_y);
+			dialogRequestMedia.getContentPane().add(mediaDateLabel_m);
+			dialogRequestMedia.getContentPane().add(mediaDateTextField_m);
+			dialogRequestMedia.getContentPane().add(mediaDateLabel_d);
+			dialogRequestMedia.getContentPane().add(mediaDateTextField_d);
+			
+								
+			dialogRequestMedia.getContentPane().add(orderMediaOkBtn);
+			dialogRequestMedia.getContentPane().add(cancelButton_requestMedia);
 				
-				int day = -1;
-				int month = -1;
-				int year = -1;
-				try {
-					day = Integer.parseInt(mediaDateTextField_d.getText());
-					month = Integer.parseInt(mediaDateTextField_m.getText());
-					year = Integer.parseInt(mediaDateTextField_y.getText());
-				} catch (NumberFormatException nfe) {
-					JOptionPane.showMessageDialog(dialogRequestMedia, "Please Enter Only Numbers in the Date Fields", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				
-				if (day > 31 || month > 12 || year > 9999) {
-					JOptionPane.showMessageDialog(dialogRequestMedia, "Incorrect Date Format, Please Fix", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				
-				// if the error checking passes , add order to librarian's account 
-				dtb.addLibrarianOrder(dtb.searchLibrarianByID(librarian.getID()), (String)mediaTypeComboBox.getSelectedItem(), mediaNameTextField.getText(), mediaAuthorTextField.getText(), 
-						mediaDateTextField_y.getText(), mediaDateTextField_m.getText(), mediaDateTextField_d.getText());
+			dialogRequestMedia.setVisible(true);
+			
+		}
+	});
 
-				// and remove the request
-				if (listMediaOrders.getSelectedIndex() != -1) {
-					dtb.removeOrderRequest(listMediaOrders.getSelectedIndex());
+		
+	/**
+	 * Ok Button for the ordering media pop-up window
+	 * 
+	 */
+	orderMediaOkBtn.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent arg0) {
+			// error checking
+			if (mediaNameTextField.getText().equals("") || mediaAuthorTextField.getText().equals("") || mediaDateTextField_d.getText().equals("")
+					|| mediaDateTextField_m.getText().equals("") || mediaDateTextField_y.getText().equals("")) {
+				JOptionPane.showMessageDialog(dialogRequestMedia, "Please Complete All Fields", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+			
+			int day = -1;
+			int month = -1;
+			int year = -1;
+			try {
+				day = Integer.parseInt(mediaDateTextField_d.getText());
+				month = Integer.parseInt(mediaDateTextField_m.getText());
+				year = Integer.parseInt(mediaDateTextField_y.getText());
+			} catch (NumberFormatException nfe) {
+				JOptionPane.showMessageDialog(dialogRequestMedia, "Please Enter Only Numbers in the Date Fields", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+			
+			if (day > 31 || month > 12 || year > 9999) {
+				JOptionPane.showMessageDialog(dialogRequestMedia, "Incorrect Date Format, Please Fix", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+			
+			// if the error checking passes , add order to librarian's account 
+			dtb.addLibrarianOrder(dtb.searchLibrarianByID(librarian.getID()), (String)mediaTypeComboBox.getSelectedItem(), mediaNameTextField.getText(), mediaAuthorTextField.getText(), 
+					mediaDateTextField_y.getText(), mediaDateTextField_m.getText(), mediaDateTextField_d.getText());
+
+			// and remove the request
+			if (listMediaOrders.getSelectedIndex() != -1) {
+				dtb.removeOrderRequest(listMediaOrders.getSelectedIndex());
+			}
+			
+			dtb.save();
+			
+			dialogRequestMedia.setVisible(false);
+			dialogRequestMedia.dispose();
+			
+			//Refresh dlm
+			customerOrderRequestsModel.clear();
+			int numRequests = dtb.getNumberOfOrderRequests();
+			for (int i = 0; i < dtb.getOrderRequests().size(); i++) {
+				customerOrderRequestsModel.addElement(dtb.getOrderRequests().get(i));
+			}
+			
+			dlm.clear();
+			
+			JOptionPane.showMessageDialog(dialogRequestMedia, "Media Successfully Ordered", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
+			
+		}
+	});
+
+	/**
+	 * Lists the current orders to be filled sent in by librarian
+	 */
+	btnViewMediaOrders.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			
+			buttonPanel.add(btnOrderRecieved);
+			buttonPanel.add(cancelButton_showOrders);
+			
+			dialogShowOrders.getContentPane().setLayout(new GridLayout(3,1,5,5));
+			dialogShowOrders.setModalityType(ModalityType.TOOLKIT_MODAL);
+			dialogShowOrders.setResizable(false);
+			
+			dialogShowOrders.setBounds(0,0 ,(int) Math.abs(screenSize.width/2.5), (int) Math.abs(screenSize.height/2.5));
+			dialogShowOrders.setLocationRelativeTo(null);
+			
+			dialogShowOrders.getContentPane().add(currMedOrdersLabel);
+			dialogShowOrders.getContentPane().add(scrollLibrarianOrders);
+			dialogShowOrders.getContentPane().add(buttonPanel);
+			//dialogShowOrders.getContentPane().add(cancelButton_showOrders);
+			//dialogShowOrders.getContentPane().add(btnOrderRecieved);
+			
+
+			currentOrderRequestsModel.clear();
+			
+			// Add orders to the dlm
+			int num = dtb.getOrders().size();
+			
+			currentOrdersList.setModel(currentOrderRequestsModel);
+			currentOrderRequestsModel.clear();
+			
+			for (int i = 0; i < num; i++) {
+				currentOrderRequestsModel.addElement(dtb.getOrders().get(i));
+			}
+				
+			dialogShowOrders.setVisible(true);	
+			
+		}
+	});
+	
+	/**
+	 * Removes the order from the list and adds the media to the shelf
+	 */
+	btnOrderRecieved.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			if (currentOrdersList.getSelectedIndex() == -1) {
+				JOptionPane.showMessageDialog(dialogShowOrders, "Please Select an Order From the List", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
+			} else {								
+				// add to shelf
+				System.out.println(currentOrdersList.getSelectedIndex());
+				Order currOrder = dtb.getOrders().get(currentOrdersList.getSelectedIndex());
+				ArrayList<String> authors = new ArrayList<String>();
+				authors.add(currOrder.getAuthor());
+				if (currOrder.getType().equals("CDs")) {
+					CD newMedia = new CD(currOrder.getName(), authors, currOrder.getDate(), new Status("available"));
+					dtb.getCds().add(newMedia);
+					
+				} else if (currOrder.getType().equals("DVDs")) {
+					DVD newMedia = new DVD(currOrder.getName(), authors, currOrder.getDate(), new Status("available"));
+					dtb.getDvds().add(newMedia);
+					
+				} else {
+					PaperMedia newMedia = new PaperMedia(currOrder.getName(), authors, currOrder.getDate(), new Status("available"));
+					dtb.getPaperMedias().add(newMedia);
 				}
+				
+				// remove order
+				dtb.removeOrder(currentOrdersList.getSelectedIndex());
 				
 				dtb.save();
+				System.out.println(dtb.shelfString());
 				
-				dialogRequestMedia.setVisible(false);
-				dialogRequestMedia.dispose();
-				
-				//Refresh dlm
-				customerOrderRequestsModel.clear();
-				int numRequests = dtb.getNumberOfOrderRequests();
-				for (int i = 0; i < dtb.getOrderRequests().size(); i++) {
-					customerOrderRequestsModel.addElement(dtb.getOrderRequests().get(i));
-				}
-				
-				dlm.clear();
-				
-				JOptionPane.showMessageDialog(dialogRequestMedia, "Media Successfully Ordered", "InfoBox ", JOptionPane.INFORMATION_MESSAGE);
-				
-			}
-		});
-	
-		/**
-		 * Lists the current orders to be filled sent in by librarian
-		 */
-		btnViewMediaOrders.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				buttonPanel.add(btnOrderRecieved);
-				buttonPanel.add(cancelButton_showOrders);
-				
-				dialogShowOrders.getContentPane().setLayout(new GridLayout(3,1,5,5));
-				dialogShowOrders.setModalityType(ModalityType.TOOLKIT_MODAL);
-				dialogShowOrders.setResizable(false);
-				
-				dialogShowOrders.setBounds(0,0 ,(int) Math.abs(screenSize.width/2.5), (int) Math.abs(screenSize.height/2.5));
-				dialogShowOrders.setLocationRelativeTo(null);
-				
-				dialogShowOrders.getContentPane().add(currMedOrdersLabel);
-				dialogShowOrders.getContentPane().add(scrollLibrarianOrders);
-				dialogShowOrders.getContentPane().add(buttonPanel);
-				//dialogShowOrders.getContentPane().add(cancelButton_showOrders);
-				//dialogShowOrders.getContentPane().add(btnOrderRecieved);
-				
-
+				// clear and re-populate the dlm
 				currentOrderRequestsModel.clear();
 				
-				// Add orders to the dlm
 				int num = dtb.getOrders().size();
-				
-				currentOrdersList.setModel(currentOrderRequestsModel);
-				currentOrderRequestsModel.clear();
 				
 				for (int i = 0; i < num; i++) {
 					currentOrderRequestsModel.addElement(dtb.getOrders().get(i));
 				}
-					
-				dialogShowOrders.setVisible(true);	
 				
-			}
-		});
-		
-		/**
-		 * Removes the order from the list and adds the media to the shelf
-		 */
-		btnOrderRecieved.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (currentOrdersList.getSelectedIndex() == -1) {
-					JOptionPane.showMessageDialog(dialogShowOrders, "Please Select an Order From the List", "Errorbox ", JOptionPane.INFORMATION_MESSAGE);
-				} else {								
-					// add to shelf
-					System.out.println(currentOrdersList.getSelectedIndex());
-					Order currOrder = dtb.getOrders().get(currentOrdersList.getSelectedIndex());
-					ArrayList<String> authors = new ArrayList<String>();
-					authors.add(currOrder.getAuthor());
-					if (currOrder.getType().equals("CDs")) {
-						CD newMedia = new CD(currOrder.getName(), authors, currOrder.getDate(), new Status("available"));
-						dtb.getCds().add(newMedia);
-						
-					} else if (currOrder.getType().equals("DVDs")) {
-						DVD newMedia = new DVD(currOrder.getName(), authors, currOrder.getDate(), new Status("available"));
-						dtb.getDvds().add(newMedia);
-						
-					} else {
-						PaperMedia newMedia = new PaperMedia(currOrder.getName(), authors, currOrder.getDate(), new Status("available"));
-						dtb.getPaperMedias().add(newMedia);
-					}
-					
-					// remove order
-					dtb.removeOrder(currentOrdersList.getSelectedIndex());
-					
-					dtb.save();
-					System.out.println(dtb.shelfString());
-					
-					// clear and re-populate the dlm
-					currentOrderRequestsModel.clear();
-					
-					int num = dtb.getOrders().size();
-					
-					for (int i = 0; i < num; i++) {
-						currentOrderRequestsModel.addElement(dtb.getOrders().get(i));
-					}
-					
-					
-					JOptionPane.showMessageDialog(dialogShowOrders, "Media Successfully Recieved", "Infobox ", JOptionPane.INFORMATION_MESSAGE);
-
-				}
-			}
-		});
 				
-		/**
-		  *  log out button for librarian
-		 */
-		    logOutBtn.addActionListener(new ActionListener() {
-			   public void actionPerformed(ActionEvent arg0) {
-				   
-				   cl.show(ParentJPanel, "1");
-				   	  
-				   
-			   }});
-	
-	
-		
+				JOptionPane.showMessageDialog(dialogShowOrders, "Media Successfully Recieved", "Infobox ", JOptionPane.INFORMATION_MESSAGE);
 
-
-///////////////////////////////////////////PUT ALL FUNCTIONS FOR CUSTOMER HERE/////////////////////////////////////////////////
+			}
+		}
+	});
 			
-		
+	/**
+	  *  log out button for librarian
+	 */
+	    logOutBtn.addActionListener(new ActionListener() {
+		   public void actionPerformed(ActionEvent arg0) {
+			   
+			   cl.show(ParentJPanel, "1");
+			   	  
+			   
+		   }});
+	}
+	
+	private void customerInitialize() {
 		/**
 		 * Button for Browsing media
 		 */
@@ -1989,8 +1988,7 @@ public class logInAs {
 			   cl.show(ParentJPanel, "1");
 			   
 		   }});
-	
-    
+		
 	}
 }
 
