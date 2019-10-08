@@ -31,7 +31,7 @@ class updateBlackListStatusTest {
 					(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 0.0);
 			
 			FeeChargeSystem a = new FeeChargeSystem();
-			Double totFees = s.addFee(50.0, JohnSmith);
+			Double totFees = a.addFee(50.0, JohnSmith);
 	}
 
 	@Test
