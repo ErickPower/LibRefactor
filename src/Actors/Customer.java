@@ -216,10 +216,15 @@ public class Customer implements Serializable {
 	
 
 	/**
-	 * Does nothing - is here so the children can overload it
+	 * Updates a customer's blacklist status based on the fees on account. if at maxFee (50), the customer is blacklisted, if less than 50, the customer is no longer blacklisted
 	 */
 	public void updateBlackListStatus() {
-
+		if (this.getFeesOwned() >= FeeChargeSystem.maxFee ) {
+			this.setIsBlackListed(true);
+			}
+		else {
+			this.setIsBlackListed(false);
+		}
     }
 
 	/**

@@ -45,16 +45,6 @@ public class Faculty extends Customer {
 	}
 
 	/**
-	 * This function takes off black list status off faculty but doesn't set black list status automatically
-	 * because librarian needs to do it manually.
-	 */
-	public void updateBlackListStatus() {
-		if (this.getFeesOwned() < FeeChargeSystem.maxFee ) {
-			this.setIsBlackListed(false);
-			};
-	}
-
-	/**
 	 * Getters & setters
 	 */
 	public int getMaxMedia() {

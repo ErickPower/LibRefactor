@@ -48,18 +48,6 @@ public class Student extends Customer{
 	}
 
 	/**
-	 * This function updates black list status for student considering the overdue fees
-	 */
-	public void updateBlackListStatus() {
-		if (this.getFeesOwned() >= 50.0) {
-			super.setIsBlackListed(true);
-		} else {
-			super.setIsBlackListed(false);
-		}
-		
-	}
-
-	/**
 	 * Getters & setters
 	 */
 	public int getMaxMedia() {
