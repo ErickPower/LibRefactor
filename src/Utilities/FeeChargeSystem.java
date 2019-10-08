@@ -77,39 +77,37 @@ public class FeeChargeSystem implements Serializable{
 	 * @param customer - Customer whose fees we want to calculate
 	 * @return Double - fees that have been added
 	 */
+	
+	
+
 	public Double calculateAndApplyOverdueFees(Customer customer){
-		
 		Map<PhysicalMedia,Calendar> media = customer.getMediaOwned();
 		
 		//Get current date 
 		Calendar currentDate = Calendar.getInstance(); //(Month range is 0-11 in Calendar)
 		//Convert to local date, including time (Month range is 1-12 in LocalDate)
-		LocalDate now = LocalDate.of(currentDate.get(Calendar.YEAR),
-				currentDate.get(Calendar.MONTH)+1,currentDate.get(Calendar.DAY_OF_MONTH));
-		now.atTime(currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), currentDate.get(Calendar.SECOND));
+		LocalDate now = createDateAndTime(currentDate);
 		
 		Double totalFees = 0.0;
 		
 		//Iterate over customer's media
 		for (Map.Entry<PhysicalMedia, Calendar> entry : media.entrySet()){
-			
 			//Get return date for iterated media & convert to localDate
 			Calendar mediaRetDate = entry.getValue();
-			LocalDate mediaDate = LocalDate.of(mediaRetDate.get(Calendar.YEAR),
-					mediaRetDate.get(Calendar.MONTH)+1,mediaRetDate.get(Calendar.DAY_OF_MONTH));
-			mediaDate.atTime(mediaRetDate.get(Calendar.HOUR_OF_DAY), mediaRetDate.get(Calendar.MINUTE), 
-					mediaRetDate.get(Calendar.SECOND));
+			LocalDate mediaDate = createDateAndTime(mediaRetDate);
 			
 			long monthsBetween = Math.abs(ChronoUnit.MONTHS.between(now,mediaDate));
 			this.addFee(monthsBetween*(5.0),customer);
 			totalFees = totalFees + (monthsBetween*(5.0));
-			
 		}
-		  
 		return totalFees;
-			
 	}
-		
 	
+	private LocalDate createDateAndTime(Calendar date) {
+		LocalDate ret = LocalDate.of(date.get(Calendar.YEAR),
+				date.get(Calendar.MONTH)+1,date.get(Calendar.DAY_OF_MONTH));
+		
+		ret.atTime(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
+		return ret;
+	}
 }
-
