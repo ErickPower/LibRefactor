@@ -13,7 +13,7 @@ import java.util.Calendar;
 
 import Actors.Customer;
 import Actors.Librarian;
-import Actors.Student;
+//import Actors.Student;
 import Media.CD;
 import Media.DVD;
 import Media.PaperMedia;
@@ -153,14 +153,14 @@ public class Database implements Serializable {
 		//Create 2 customers
 		Calendar johnBirthDate = Calendar.getInstance();
 		johnBirthDate.set(1997,4,17);
-		Student JohnSmith = new Student("101","John" , "Smith" , johnBirthDate,new Address 
-				(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 10.0);
+		Customer JohnSmith = new Customer("101","John" , "Smith" , johnBirthDate,new Address 
+				(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 10.0, false);
 				//Note:Blacklist status is based only on fees only so need to specify it.
 				
 		Calendar annBirthDate = Calendar.getInstance();
 		annBirthDate.set(1995,2,22);
-		Student AnnLis = new Student("102","Ann" , "Lis" , annBirthDate,new Address 
-			(102,"st king street","t2y444","calgary","canada"),"4038724555", null,null,null, 40.0);
+		Customer AnnLis = new Customer("102","Ann" , "Lis" , annBirthDate,new Address 
+			(102,"st king street","t2y444","calgary","canada"),"4038724555", null,null,null, 40.0, false);
 		
 		customers.add(JohnSmith);
 		customers.add(AnnLis);

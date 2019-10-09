@@ -9,8 +9,8 @@ import org.junit.Assert;
 //import org.junit.Test;
 
 import Actors.Customer;
-import Actors.Student;
-import Actors.Faculty;
+//import Actors.Student;
+//import Actors.Faculty;
 import Media.CD;
 import Utilities.Address;
 import Utilities.FeeChargeSystem;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 public class FeeChargeSystemUnitTesting {
 
 	Calendar johnBirthDate;
-	Student JohnSmith;
+	Customer JohnSmith;
 	FeeChargeSystem a;
 	
 	
@@ -36,8 +36,8 @@ public class FeeChargeSystemUnitTesting {
 	void setUp() throws Exception{
 		johnBirthDate = Calendar.getInstance();
 		johnBirthDate.set(1997,4,17);
-		JohnSmith = new Student("101","John" , "Smith" , johnBirthDate,new Address 
-				(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 0.0);
+		JohnSmith = new Customer("101","John" , "Smith" , johnBirthDate,new Address 
+				(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 0.0, false);
 		
 		//Create metallica CD
 		ArrayList<String> metallicaComposers = new ArrayList<String>();

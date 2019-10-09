@@ -145,8 +145,10 @@ public class Librarian implements Serializable{
 	 * This function is for librarian to set faculty blacklisted (allows to do it only if overdue fees are 50.0)
 	 * @param faculty
 	 */
-	public void makeBlackListed(Faculty faculty) {
-		if (faculty.getFeesOwned() == 50.0) {faculty.setIsBlackListed(true);}
+	public void makeBlackListed(Customer faculty) {
+		if (faculty.getFeesOwned() == 50.0 && faculty.getTag()) {
+			faculty.setIsBlackListed(true);
+		}
 	}
 	
 	/**

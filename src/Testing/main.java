@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Actors.Librarian;
-import Actors.Student;
+import Actors.Customer;
+//import Actors.Student;
 import Media.*;
 import DataStorage.Database;
 import Utilities.*;
@@ -21,8 +22,8 @@ public class main {
 		//Create customer
 		Calendar johnBirthDate = Calendar.getInstance();
 		johnBirthDate.set(1997,4,17);
-		Student JohnSmith = new Student("101","John" , "Smith" , johnBirthDate,new Address 
-				(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 10.0);
+		Customer JohnSmith = new Customer("101","John" , "Smith" , johnBirthDate,new Address 
+				(100,"sesame street","t2y344","calgary","canada"),"4039224555", null,null,null, 10.0, false);
 		
 		//Create metallica CD
 		ArrayList<String> metallicaComposers = new ArrayList<String>();

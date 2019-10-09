@@ -9,6 +9,7 @@ import java.util.Map;
 import Media.PhysicalMedia;
 import Utilities.*;
 
+
 /**
  * This class is responsible for keeping information about a customer
  */
@@ -22,6 +23,8 @@ public class Customer implements Serializable {
 	private Calendar birthDate;
 	private Address Address;
 	private String password;
+	private Boolean isFaculty; //1 for student, 2 for faculty
+	private int maxMedia;
 
 	private Map<PhysicalMedia, Calendar> mediaOwned; //should be returned on date
 	private Map<PhysicalMedia,CalendarPeriod> mediaOnHold; //held from: to: , is filtered to remove expired holds with each load/store in Database class.
@@ -35,7 +38,7 @@ public class Customer implements Serializable {
 	 */
 	public Customer(String id,String fn,String ln,Calendar bd, Address address,String phonenum,
 			Map<PhysicalMedia, Calendar> mediaOwned,Map<PhysicalMedia, CalendarPeriod> mediaOnHold,
-			Map<PhysicalMedia, Calendar> mediaReturned,Double feesOwned) {
+			Map<PhysicalMedia, Calendar> mediaReturned,Double feesOwned, Boolean typeTag) {
 		this.ID = id;
 		this.FirstName =fn;
 		this.LastName = ln;
@@ -43,12 +46,20 @@ public class Customer implements Serializable {
 		this.Address = address;
 		this.phoneNumber = phonenum;
 		this.password = fn+ln;
+		this.isFaculty = typeTag;
 		
 		if (mediaOwned == null) {this.mediaOwned = new HashMap<PhysicalMedia,Calendar>();}
 		else {this.mediaOwned = mediaOwned;}
 		
 		if (mediaOnHold == null) {this.mediaOnHold = new HashMap<PhysicalMedia,CalendarPeriod>();}
 		else {this.mediaOnHold = mediaOnHold;}
+		
+		if (this.isFaculty) {
+			this.setMaxMedia(8);
+		}
+		else {
+			this.setMaxMedia(5);
+		}
 
 		this.setFeesOwned(feesOwned);
 		
@@ -59,6 +70,10 @@ public class Customer implements Serializable {
 	}
 	
 	/**Getters & setters*/
+	public Boolean getTag() {
+		return this.isFaculty;
+	}
+	
 	public String getPassword() {
 		return this.password;
 	}
@@ -237,12 +252,19 @@ public class Customer implements Serializable {
 	}
 
 	/**
-	 * Does nothing. Is an overridden method by children classes
-	 * @return int 
+	 * Returns the max number of media the customer can borrow at once
+	 * @return Max number of media borrowable
 	 */
 	public int getMaxMedia() {
-		
-		return 0;
+		return maxMedia;
+	}
+
+	/**
+	 * sets the max amount of media the customer can borrow at once
+	 * @param maxMedia amount of media to set as maximum borrowable
+	 */
+	public void setMaxMedia(int maxMedia) {
+		this.maxMedia = maxMedia;
 	}
 
 	
