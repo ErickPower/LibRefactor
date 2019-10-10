@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.util.Calendar;
+import java.time.LocalDate;
 
 /**
  * This class is responsible for calculating dates such as calculating date one week from now or checking if
@@ -35,6 +36,14 @@ public class Calculations {
 		Calendar retDate = d;
 		
 		return (now.after(retDate));
+	}
+	
+	public static LocalDate createDateAndTime(Calendar date) {
+		LocalDate ret = LocalDate.of(date.get(Calendar.YEAR),
+				date.get(Calendar.MONTH)+1,date.get(Calendar.DAY_OF_MONTH));
+		
+		ret.atTime(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
+		return ret;
 	}
 	
 	

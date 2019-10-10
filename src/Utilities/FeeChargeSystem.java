@@ -86,7 +86,7 @@ public class FeeChargeSystem implements Serializable{
 		//Get current date 
 		Calendar currentDate = Calendar.getInstance(); //(Month range is 0-11 in Calendar)
 		//Convert to local date, including time (Month range is 1-12 in LocalDate)
-		LocalDate now = createDateAndTime(currentDate);
+		LocalDate now = Calculations.createDateAndTime(currentDate);
 		
 		Double totalFees = 0.0;
 		
@@ -94,7 +94,7 @@ public class FeeChargeSystem implements Serializable{
 		for (Map.Entry<PhysicalMedia, Calendar> entry : media.entrySet()){
 			//Get return date for iterated media & convert to localDate
 			Calendar mediaRetDate = entry.getValue();
-			LocalDate mediaDate = createDateAndTime(mediaRetDate);
+			LocalDate mediaDate = Calculations.createDateAndTime(mediaRetDate);
 			
 			long monthsBetween = Math.abs(ChronoUnit.MONTHS.between(now,mediaDate));
 			this.addFee(monthsBetween*(5.0),customer);
@@ -103,11 +103,11 @@ public class FeeChargeSystem implements Serializable{
 		return totalFees;
 	}
 	
-	private LocalDate createDateAndTime(Calendar date) {
+/*	private LocalDate createDateAndTime(Calendar date) {
 		LocalDate ret = LocalDate.of(date.get(Calendar.YEAR),
 				date.get(Calendar.MONTH)+1,date.get(Calendar.DAY_OF_MONTH));
 		
 		ret.atTime(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
 		return ret;
-	}
+	} */
 }
